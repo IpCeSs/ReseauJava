@@ -19,7 +19,7 @@ public class App {
 		System.out.println("\nWelcome to CessSpot \n");
 		
 boolean afficherMenu = true;
-        //on met dans un while pour eviter l'empilement creer par recursivité (rappel de main() dans retour)
+        
         while(afficherMenu) {
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
@@ -150,7 +150,7 @@ boolean afficherMenu = true;
 
 	// fonction permettant de retourner au menu : 
 	/**
-    * Demande a l'utilisateur si il faut returner au menu ou quitter
+    * Demande a l'utilisateur si il faut returner au menu ou quiter
     * @return : true si on retourne au menu sinon false 
     */
 	public static boolean retour() {
@@ -162,10 +162,10 @@ boolean afficherMenu = true;
         char r;
         Scanner ret = new Scanner(System.in);
         do {
-            System.out.println("Répondre par o / n");
+            System.out.println("Répondre par O / N");
             r = ret.nextLine().charAt(0);
-        } while( r != 'o' && r != 'n');
-        if(r == 'n') {
+        } while( r != 'O' && r != 'N');
+        if(r == 'O') {
             return true;
         } else {
             return false;

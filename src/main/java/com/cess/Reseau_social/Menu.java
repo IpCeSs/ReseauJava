@@ -176,10 +176,15 @@ public class Menu {
 	  /**
 	   * 
 	   * @param utilisateur
+	   * 
+	   * pour modifier une donnée de utilisateur
 	   */
 	  
 	  private void modifierProfil(Utilisateur utilisateur) { // TODO Auto-generated method stub
-	  
+		  Scanner sc = new Scanner(System.in);
+		  System.out.println("entrez votre nouveau nom");
+		  utilisateur.setNom(sc.nextLine());
+		  System.out.println("votre nom a été changé par celui ci " +utilisateur.getnom());
 	  }
 	  
 	  /**

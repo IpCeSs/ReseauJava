@@ -14,14 +14,22 @@ public class App {
 		utilisateur.setPrenom("Vincent");
 		utilisateur.setDateNaissance("26 juin 1978");
 		utilisateur.setPays("FRANCE");
-		System.out.println("Bonjour " +utilisateur.getNom()+" "+utilisateur.getPrenom()+" vous êtes né le "+utilisateur.getDateNaissance()+" vous habitez en "+utilisateur.getPays());
+		//System.out.println("Bonjour " +utilisateur.getNom()+" "+utilisateur.getPrenom()+" vous êtes né le "+utilisateur.getDateNaissance()+" vous habitez en "+utilisateur.getPays());
 		
 		Utilisateur utilisateurB= new Utilisateur();
 		utilisateurB.setNom("Voiron");
 		utilisateurB.setPrenom("Arnaud");
 		utilisateurB.setDateNaissance("?? novembre 1985");
 		utilisateurB.setPays("FRANCE");
-		System.out.println("Bonjour " +utilisateurB.getNom()+" "+utilisateurB.getPrenom()+" vous êtes né le "+utilisateurB.getDateNaissance()+" vous habitez en "+utilisateurB.getPays());
+		//System.out.println("Bonjour " +utilisateurB.getNom()+" "+utilisateurB.getPrenom()+" vous êtes né le "+utilisateurB.getDateNaissance()+" vous habitez en "+utilisateurB.getPays());
+	
+		
+		Menu menu=new Menu();
+		/**
+		 * @param utilisateur
+		 */
+		menu.Menu(utilisateur);
+	
 	}
 }
 

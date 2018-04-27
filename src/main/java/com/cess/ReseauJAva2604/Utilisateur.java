@@ -1,7 +1,13 @@
-package com.cess.Reseau_social;
+package com.cess.ReseauJAva2604;
 
 public class Utilisateur {
 
+	
+	/**
+	 * Les attribiuts sont en private, si on souhaite les modifier  dasn une autre classe, c'est cette classe qui en prendra la "responsabilité"
+	 * en lesmodifiant via les methodes publiques de la première classe
+	 * Ainsi, les valeurs de base des attributs ne seront jamais exposées à des changements
+	 */
 	private String nom;
 	private String prenom;
 	private String pays;
@@ -13,7 +19,7 @@ public class Utilisateur {
 	// Constructeur par défaut, chaque new user devra avoir ces infos
 	public Utilisateur() {
 
-		System.out.println("Création d'un utilisateur");
+		//System.out.println("Création d'un utilisateur");
 		nom = "Inconnu";
 		prenom = "Inconnu";
 		pays = "INCONNU";

@@ -1,10 +1,12 @@
-package com.cess.Reseau_social;
+package com.cess.ReseauJAva2604;
 
-import java.util.Scanner;
+
 
 //import java.util.Scanner;
 
 public class App {
+	
+
 
 	public static void main(String[] args) {
 		//App app = new App(); // On crée une nouvelle instance de App afin de ne plus etre en static
@@ -23,12 +25,45 @@ public class App {
 		utilisateurB.setPays("FRANCE");
 		//System.out.println("Bonjour " +utilisateurB.getNom()+" "+utilisateurB.getPrenom()+" vous êtes né le "+utilisateurB.getDateNaissance()+" vous habitez en "+utilisateurB.getPays());
 	
+		/**
+		 * On crée les nouveaux modérateurs avec les actions différentes selon le nombre defini en paramètre qui fait référence aux attributs
+		 * privés définis dans la classe Modérateur
+		 * 
+		 * mod1 = modifier/supprimer messages
+		 * mod2= SuperModerateur
+		 * 
+		 * On note que modo spécifie utilisateur et en récupère donc ses atributs et méthodes (setnom, getnom...)
+		 */
+		
+		Moderateur mod1=new Moderateur();
+		mod1.setNom("Zou");
+		mod1.setPrenom("Zou");
+		mod1.setDateNaissance("inconnue");
+		mod1.setPays("FRANCE");
+		
+		
+		Moderateur mod2=new Moderateur();
+		mod2.setNom("Ip");
+		mod2.setPrenom("Cess");
+		mod2.setDateNaissance("14 mai 1986");
+		mod2.setPays("FRANCE");
+		mod2.setModo(2);
+		
+		Post post=new Post();
+		
+		
 		
 		Menu menu=new Menu();
 		/**
-		 * @param utilisateur
+		 * @param utilisateur ou extension de classe (moderateur)
 		 */
-		menu.Menu(utilisateur);
+		menu.Menu(mod2,post);
+		
+
+	
+		
+		
+		
 	
 	}
 }

@@ -11,94 +11,295 @@ public class Menu {
 	 * @param utilisateur
 	 */
 
-	public void Menu(Moderateur modo2, Post messages) {
+	public void Menu(Moderateur modo2, Post post) {
 
 		Scanner sc = new Scanner(System.in);
 		System.out.println("\nWelcome to CessSpot \n");
+		if (modo2.isModerateur() == false) {
+			while (afficherMenu) {
 
-		while (afficherMenu) {
+				System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
-			System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
+				System.out.println("1- Affichez votre profil");
 
-			System.out.println("1- Affichez votre profil");
+				System.out.println("2- Modifier vos informations ");
 
-			System.out.println("2- Modifier vos informations ");
+				System.out.println("3- Ecrire un message");
 
-			System.out.println("3- Ecrire un message");
+				System.out.println("4- Afficher un message");
 
-			System.out.println("4- Afficher un message");
+				System.out.println("5- Ajouter un ami");
 
-			System.out.println("5- Ajouter un ami");
+				System.out.println("6- Afficher votre liste d'ami");
 
-			System.out.println("6- Afficher votre liste d'ami");
+				System.out.println("9- Créer un compte");
 
-			System.out.println("9- Créer un compte");
+				System.out.println("0- Quitter CessSpot");
 
-			System.out.println("0- Quitter CessSpot");
-			System.out.println("12- afficher les utilisateurs");
+				int choix = sc.nextInt();
+				sc.nextLine();
+				// System.out.println("Bienvenue sur CessSpot "+ prenom +" "+nom);
 
-			int choix = sc.nextInt();
-			sc.nextLine();
-			// System.out.println("Bienvenue sur CessSpot "+ prenom +" "+nom);
+				switch (choix)
 
-			switch (choix)
+				{
 
-			{
+				case 1:
 
-			case 1:
+					showProfil(modo2);
 
-				showProfil(modo2);
+					break;
 
-				break;
+				case 2:
 
-			case 2:
+					modifierProfil(modo2);
 
-				modifierProfil(modo2);
+					break;
+				case 3:
 
-				break;
-			case 3:
+					write(post);
 
-				write(messages);
+					break;
+				case 4:
 
-				break;
-			case 4:
+					read(post);
 
-				read(messages);
+					break;
+				case 5:
 
-				break;
-			case 5:
+					addFriend();
 
-				addFriend();
+					break;
+				case 6:
 
-				break;
-			case 6:
+					displayFriend();
 
-				displayFriend();
+					break;
+				case 0:
+					exit();
 
-				break;
-			case 0:
-				exit();
+					break;
 
-				break;
+				case 9:
 
-			case 9:
+					newUser();
 
-				newUser();
-			case 12:
-				allUsers();
+					break;
 
-				break;
+				}
+
+				afficherMenu = retour();
+
+			} // fin while
+		} // fin if
+		else if (modo2.isModerateur() == true && Moderateur.getModo() == 1) {
+			while (afficherMenu) {
+
+				System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
+// pour les invités qui n'ont pas soif
+				System.out.println("1- Affichez votre profil");
+
+				System.out.println("2- Modifier vos informations ");
+
+				System.out.println("3- Ecrire un message");
+
+				System.out.println("4- Afficher un message");
+
+				System.out.println("5- Ajouter un ami");
+
+				System.out.println("6- Afficher votre liste d'ami");
+
+				System.out.println("9- Créer un compte");
+
+				System.out.println("10- Supprimer Messages Autres Utilisateurs");
+
+				System.out.println("11- Editer Messages Autres Utilisateurs");
+
+				System.out.println("12- afficher les utilisateurs");
+
+				System.out.println("0- Quitter CessSpot");
+
+				int choix = sc.nextInt();
+				sc.nextLine();
+				// System.out.println("Bienvenue sur CessSpot "+ prenom +" "+nom);
+
+				switch (choix)
+
+				{
+
+				case 1:
+
+					showProfil(modo2);
+
+					break;
+
+				case 2:
+
+					modifierProfil(modo2);
+
+					break;
+				case 3:
+
+					write(post);
+
+					break;
+				case 4:
+
+					read(post);
+
+					break;
+				case 5:
+
+					addFriend();
+
+					break;
+				case 6:
+
+					displayFriend();
+
+					break;
+				case 0:
+					exit();
+
+					break;
+
+				case 9:
+
+					newUser();
+				case 10:
+					delUsersMessages();
+
+					break;
+				case 11:
+					editUsersMessages();
+
+					break;
+				case 12:
+					allUsers();
+
+					break;
+
+				}
+
+				afficherMenu = retour();
 
 			}
+		} // fin else if
+		else {
+			while (afficherMenu) {
 
-			afficherMenu = retour();
+				System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
-		} // fin while
+				System.out.println("1- Affichez votre profil");
+
+				System.out.println("2- Modifier vos informations ");
+
+				System.out.println("3- Ecrire un message");
+
+				System.out.println("4- Afficher un message");
+
+				System.out.println("5- Ajouter un ami");
+
+				System.out.println("6- Afficher votre liste d'ami");
+
+				System.out.println("9- Créer un compte");
+
+				System.out.println("10- Supprimer Messages Autres Utilisateurs");
+
+				System.out.println("11- Editer Messages Autres Utilisateurs");
+
+				System.out.println("12- afficher les utilisateurs");
+
+				System.out.println("13- Supprimer un utilisateur");
+
+				System.out.println("0- Quitter CessSpot");
+
+				int choix = sc.nextInt();
+				sc.nextLine();
+				// System.out.println("Bienvenue sur CessSpot "+ prenom +" "+nom);
+
+				switch (choix)
+
+				{
+
+				case 1:
+
+					showProfil(modo2);
+
+					break;
+
+				case 2:
+
+					modifierProfil(modo2);
+
+					break;
+				case 3:
+
+					write(post);
+
+					break;
+				case 4:
+
+					read(post);
+
+					break;
+				case 5:
+
+					addFriend();
+
+					break;
+				case 6:
+
+					displayFriend();
+
+					break;
+				case 0:
+					exit();
+
+					break;
+
+				case 9:
+
+					newUser();
+				case 10:
+					delUsersMessages();
+
+					break;
+				case 11:
+					editUsersMessages();
+
+					break;
+				case 12:
+					allUsers();
+
+					break;
+				case 13:
+					deleteUser();
+
+					break;
+					
+
+				}
+
+				afficherMenu = retour();
+
+			}
+		}
 
 	}
 	/*
 	 * @return : true si on retourne au menu sinon false
 	 */
+
+	private void editUsersMessages() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void delUsersMessages() {
+		// TODO Auto-generated method stub
+
+	}
 
 	private void allUsers() {
 		// TODO Auto-generated method stub
@@ -155,19 +356,21 @@ public class Menu {
 	private void addFriend() { // TODO Auto-generated method stub
 
 	}
+
 	/**
 	 * 
 	 * @param messages
 	 */
 
-	private void read(Post messages) {
-		System.out.println("Message de : " + messages.getAuteur());
-		System.out.println("Titre : " + " " + messages.getTitre());
-		System.out.println("Message :" + " " + messages.getBody());
-
+	private void read(Post post) {
+		//for(int i=post.getMsgId();i<9;i++) {
+		System.out.println("Auteur   " + post.getAuteur());
+		System.out.println("Titre   " + post.getTitre());
+		System.out.println("Message   " + post.getBody()+"\n");
+		//}
 	}
 
-	private void write(Post messages) {
+	private void write(Post post) {
 
 		Scanner sc = new Scanner(System.in);
 		/**
@@ -176,19 +379,19 @@ public class Menu {
 		 */
 
 		// à chaque execution de la méthode, on incrémente le compteur userId
-		int id = messages.getMsgId();
+		int id = post.getMsgId();
 
 		System.out.println("Auteur du message");
 
-		messages.setAuteur(sc.nextLine());
+		post.setAuteur(sc.nextLine());
 
 		System.out.println("Titre du message");
 
-		messages.setTitre(sc.nextLine());
+		post.setTitre(sc.nextLine());
 
 		System.out.println("Contenu du message");
 
-		messages.setBody(sc.nextLine());
+		post.setBody(sc.nextLine());
 		;
 		id++;
 
@@ -227,8 +430,7 @@ public class Menu {
 		System.out.println("Pays de Résidence" + " " + modo2.getPays());
 
 	}
-	
-	
+
 	private void moderateur() {
 		modifyMessage();
 		deleteMessage();

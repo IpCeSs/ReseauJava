@@ -47,9 +47,13 @@ public class App {
 		mod2.setPrenom("Cess");
 		mod2.setDateNaissance("14 mai 1986");
 		mod2.setPays("FRANCE");
-		mod2.setModo(2);
+		//mod2.setModo(2);
 		
 		Post post=new Post();
+		post.getAuteur();
+		post.getTitre();
+		post.getBody();
+		
 		
 		
 		

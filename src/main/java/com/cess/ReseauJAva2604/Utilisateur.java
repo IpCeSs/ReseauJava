@@ -59,6 +59,11 @@ public class Utilisateur {
 		this.dateNaissance = dateNaissance;
 	}
 	
+	public static boolean isModerateur() {
+		return false;
+	}
+
+	
 	
 	
 

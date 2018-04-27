@@ -5,13 +5,13 @@ import java.util.Scanner;
 public class Post {
 	  
 	private int msgId=-1;
-	 private String messages[][]=new String[9][3]; 
-	 private int longTableau=messages.length;
+	 
+	// private int longTableau=messages.length;
 	private String auteur, body, titre;
 	
 	public Post() {
 		
-		//String messages[][] =;
+		String messages[][]=new String[9][3];
 		 msgId=0;
 		 messages[msgId][0]=auteur;
 		 messages[msgId][1]=titre;
@@ -23,7 +23,6 @@ public class Post {
 		return msgId;
 	}
 
-	
 
 	public String getAuteur() {
 		return auteur;
@@ -49,13 +48,13 @@ public class Post {
 		this.titre = titre;
 	}
 
-	public int getLongTableau() {
-		return longTableau;
-	}
+	//public int getLongTableau() {
+	//	return longTableau;
+	//}
 
-	public void setLongTableau(int longTableau) {
-		this.longTableau = longTableau;
-	}
+//	public void setLongTableau(int longTableau) {
+	//	this.longTableau = longTableau;
+	//}
 	
 
 }

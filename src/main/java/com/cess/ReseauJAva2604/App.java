@@ -1,78 +1,72 @@
 package com.cess.ReseauJAva2604;
 
-
-
 //import java.util.Scanner;
 
 public class App {
-	
-
 
 	public static void main(String[] args) {
-		//App app = new App(); // On crée une nouvelle instance de App afin de ne plus etre en static
-		// initialisation de l'utilisateur 
-		Utilisateur utilisateur= new Utilisateur();
-		utilisateur.setNom("Maisonneuve");
-		utilisateur.setPrenom("Vincent");
-		utilisateur.setDateNaissance("26 juin 1978");
-		utilisateur.setPays("FRANCE");
-		//System.out.println("Bonjour " +utilisateur.getNom()+" "+utilisateur.getPrenom()+" vous êtes né le "+utilisateur.getDateNaissance()+" vous habitez en "+utilisateur.getPays());
-		
-		Utilisateur utilisateurB= new Utilisateur();
-		utilisateurB.setNom("Voiron");
-		utilisateurB.setPrenom("Arnaud");
-		utilisateurB.setDateNaissance("?? novembre 1985");
-		utilisateurB.setPays("FRANCE");
-		//System.out.println("Bonjour " +utilisateurB.getNom()+" "+utilisateurB.getPrenom()+" vous êtes né le "+utilisateurB.getDateNaissance()+" vous habitez en "+utilisateurB.getPays());
-	
-		/**
-		 * On crée les nouveaux modérateurs avec les actions différentes selon le nombre defini en paramètre qui fait référence aux attributs
-		 * privés définis dans la classe Modérateur
-		 * 
-		 * mod1 = modifier/supprimer messages
-		 * mod2= SuperModerateur
-		 * 
-		 * On note que modo spécifie utilisateur et en récupère donc ses atributs et méthodes (setnom, getnom...)
-		 */
-		
-		Moderateur mod1=new Moderateur();
-		mod1.setNom("Zou");
-		mod1.setPrenom("Zou");
-		mod1.setDateNaissance("inconnue");
-		mod1.setPays("FRANCE");
-		
-		
-		Moderateur mod2=new Moderateur();
-		mod2.setNom("Ip");
-		mod2.setPrenom("Cess");
-		mod2.setDateNaissance("14 mai 1986");
-		mod2.setPays("FRANCE");
-		//mod2.setModo(2);
-		
-		Post post=new Post();
-		post.getAuteur();
-		post.getTitre();
-		post.getBody();
-		
-		
-		
-		
-		Menu menu=new Menu();
-		/**
-		 * @param utilisateur ou extension de classe (moderateur)
-		 */
-		menu.Menu(mod2,post);
-		
 
-	
-		
-		
-		
-	
+		/**
+		 * @info On note que modo spécifie utilisateur et en récupère donc ses atributs
+		 *       et méthodes (setnom, getnom...)
+		 */
+		/**
+		 * @info on instancie un nouvel utilisateur
+		 */
+		Utilisateur user = new Utilisateur();
+		/**
+		 * @info on instancie un nouveau Modérateur (pour messages)
+		 */
+		Moderateur mod = new Moderateur();
+		/**
+		 * @info on instancie un nouveau post (pour messages)
+		 */
+		Post post = new Post();
+		/**
+		 * @info on instancie un nouveau Menu (pour messages)
+		 */
+		Menu menu = new Menu();
+		/**
+		 * @info on exécute la fonction Menu() de la classe Menu
+		 */
+		menu.Menu(user, mod, post);
+
 	}
 }
+/// Partie 2 sans tableau/////////////////////////////////
 
-//PARTIE 1 TD
+// App app = new App(); // On crée une nouvelle instance de App afin de ne plus
+// etre en static
+// initialisation de l'utilisateur
+/*
+ * Utilisateur user = new Utilisateur(); user.setNom("Maisonneuve");
+ * user.setPrenom("Vincent"); user.setDateNaissance("26 juin 1978");
+ * user.setPays("FRANCE");
+ */
+// System.out.println("Bonjour " +utilisateur.getNom()+"
+// "+utilisateur.getPrenom()+" vous êtes né le
+// "+utilisateur.getDateNaissance()+" vous habitez en "+utilisateur.getPays());
+
+// utilisateurB.setNom("Voiron");
+// utilisateurB.setPrenom("Arnaud");
+// utilisateurB.setDateNaissance("?? novembre 1985");
+// utilisateurB.setPays("FRANCE");
+// System.out.println("Bonjour " +utilisateurB.getNom()+"
+// "+utilisateurB.getPrenom()+" vous êtes né le
+// "+utilisateurB.getDateNaissance()+" vous habitez en
+// "+utilisateurB.getPays());
+
+/*
+ * Moderateur mod1 = new Moderateur(); mod1.setNom("Zou");
+ * mod1.setPrenom("Zou"); mod1.setDateNaissance("inconnue");
+ * mod1.setPays("FRANCE");
+ * 
+ * Moderateur mod2 = new Moderateur(); mod2.setNom("Ip");
+ * mod2.setPrenom("Cess"); mod2.setDateNaissance("14 mai 1986");
+ * mod2.setPays("FRANCE"); mod2.setModo(2);
+ */
+
+// PARTIE 1 TD/////////////////////////////
 /*
  * création d'un tableau utilisateurs en dur etape 1TD String users[][] = { {
  * "Ip", "Cess", "cess@cess.com", "Canada", "14 mai 1986" }, { "NewHouse",

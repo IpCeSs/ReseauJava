@@ -3,58 +3,55 @@ package com.cess.ReseauJAva2604;
 import java.util.Scanner;
 
 public class Post {
-	  
-	private int msgId=-1;
-	 
-	// private int longTableau=messages.length;
-	private String auteur, body, titre;
-	
+
+	private int msgId = 0;
+	String messages[][] = new String[10][3];
+
+	private String auteur = " ";
+
+	private String body = " ";
+
+	private String titre = " ";
+
 	public Post() {
-		
-		String messages[][]=new String[9][3];
-		 msgId=0;
-		 messages[msgId][0]=auteur;
-		 messages[msgId][1]=titre;
-		 messages[msgId][2]=body;
-	 
+
+	}
+
+	public void setpost() {
+		Scanner sc = new Scanner(System.in);
+		/**
+		 * on déclare les variables que l'on va récupérer avec la saisie clavier et
+		 * utiliser dans le tableau String auteur,body, titre;
+		 */
+
+		// à chaque execution de la méthode, on incrémente le compteur messageId
+		int id = getMsgId();
+		System.out.println("Auteur du message");
+		auteur = sc.nextLine();
+		messages[id][0] = auteur;
+
+		System.out.println("Titre du message");
+		titre = sc.nextLine();
+		messages[id][1] = titre;
+
+		System.out.println("Contenu du message");
+		body = sc.nextLine();
+		messages[id][2] = body;
+		id++;
+
+	}
+
+	/**
+	 * @info permet de récupérer la valeur du tableau crée grâce à setPost
+	 * @return
+	 */
+
+	public String[][] getPost() {
+		return this.messages;
 	}
 
 	public int getMsgId() {
-		return msgId;
+		return this.msgId;
 	}
-
-
-	public String getAuteur() {
-		return auteur;
-	}
-
-	public void setAuteur(String auteur) {
-		this.auteur = auteur;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
-
-	public String getTitre() {
-		return titre;
-	}
-
-	public void setTitre(String titre) {
-		this.titre = titre;
-	}
-
-	//public int getLongTableau() {
-	//	return longTableau;
-	//}
-
-//	public void setLongTableau(int longTableau) {
-	//	this.longTableau = longTableau;
-	//}
-	
 
 }

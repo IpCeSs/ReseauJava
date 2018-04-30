@@ -7,19 +7,16 @@ package com.cess.ReseauJAva2604;
  */
 public class Moderateur extends Utilisateur {
 
-	private static int modo;
+	private int modo;
+	private int modId;
 
 	/**
-	 * On donne une valeur à modo dasn le constructeur pour qu'il soit toujours modo au moins niveau 1
+	 * @info On donne une valeur à modo dans le constructeur pour qu'il soit
+	 *       toujours modo au moins niveau 1
 	 */
 	public Moderateur() {
-		/*if (modo == 1) {
-			moderateur();
-		} else if (modo == 2) {
-			superModerateur();
-		}*/
-		modo=1;
-// J'aime les chats :) 
+
+		modo = 1;
 	}
 
 	/**
@@ -27,20 +24,24 @@ public class Moderateur extends Utilisateur {
 	 * @return
 	 */
 
-	public static int getModo() {
-		return modo;
+	public int getModo() {
+		return this.modo;
 	}
 
 	/**
-	 * 
 	 * @param modo
 	 */
 
+	/*
+	 * @info setModo permet de créer un utilisateur modo avec setUser et en plus il
+	 * est modo
+	 */
 	public void setModo(int modo) {
+		setUser();
 		this.modo = modo;
 	}
-// Pourquoi les blondes mettent elles des bouteilles vides au frigo ? (réponse Menu.java)
-	public static boolean isModerateur() {
+
+	public boolean isModerateur() {
 		return true;
 	}
 

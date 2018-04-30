@@ -1,10 +1,12 @@
 package com.cess.ReseauJAva2604;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
 
 	private boolean afficherMenu = true;
+	private boolean afficheFormNewUser=true;
 
 	/**
 	 * 
@@ -15,36 +17,50 @@ public class Menu {
 	Post post;
 	Utilisateur user;
 	Moderateur mod;
-
+/**
+ * 
+ * @param user
+ * @param mod
+ * @param post
+ */
+	@SuppressWarnings("finally")
 	public void Menu(Utilisateur user, Moderateur mod, Post post) {
 
 		this.post = post;
-
-		Scanner sc = new Scanner(System.in);
-		System.out.println("\nWelcome to CessSpot \n");
-		System.out.println("Choisissez votre niveau d'autorisation\n");
-		System.out.println("utilisateur 0 / Admin 1 / super Admin");
-		int level = sc.nextInt();
-		sc.nextLine();
-
 		Utilisateur currentUser = null;
+		while(afficheFormNewUser) {
+		try {
+			Scanner sc = new Scanner(System.in);
+			System.out.println("\nWelcome to CessSpot \n");
+			System.out.println("Choisissez votre niveau d'autorisation\n");
+			System.out.println("utilisateur 0 / Admin 1 / super Admin 2");
+			int level = sc.nextInt();
+			sc.nextLine();
 
-		switch (level)
+			switch (level)
 
-		{
+			{
 
-		case 0:
-			currentUser = user;
-			user.setUser();
+			case 0:
+				currentUser = user;
+				user.setUser();
 
-			break;
+				break;
 
-		default:
-			currentUser = mod;
-			mod.setModo(level);
+			default:
+				currentUser = mod;
+				mod.setModo(level);
 
-			break;
+				break;
 
+			}
+			afficheFormNewUser=false;
+		} catch (InputMismatchException e) {
+			System.out.println("Vous n'avez pas tapé l'un des choix possibles!");
+			// input.reset();
+		} finally {
+			continue;
+		}
 		}
 
 		while (afficherMenu) {
@@ -148,13 +164,13 @@ public class Menu {
 	 */
 
 	private void modifierProfil() { // TODO Auto-generated method stub
-	////////	ENCOURS
-	/**	user.setUser();
-		user.getUsers();
-		System.out.println("Nom :  " + user[userId][0]);
-		System.out.println("Prénom :  " + user[userId][1]);
-		System.out.println("Pays de résidence :   " + users[userId][2]);
-		System.out.println("Né(e) le :   " + user[userId][3] + "\n");*/
+		//////// ENCOURS
+		/**
+		 * user.setUser(); user.getUsers(); System.out.println("Nom : " +
+		 * user[userId][0]); System.out.println("Prénom : " + user[userId][1]);
+		 * System.out.println("Pays de résidence : " + users[userId][2]);
+		 * System.out.println("Né(e) le : " + user[userId][3] + "\n");
+		 */
 	}
 
 	/**
@@ -162,10 +178,12 @@ public class Menu {
 	 * @param utilisateur
 	 */
 
-	private void showProfil() { // TODO EN COURS 
-		/*System.out.println("Profil de " + mod.getPrenom() + " " + mod.getNom());
-		System.out.println("Né(e) le" + " " + mod.getDateNaissance());
-		System.out.println("Pays de Résidence" + " " + mod.getPays());*/
+	private void showProfil() { // TODO EN COURS
+		/*
+		 * System.out.println("Profil de " + mod.getPrenom() + " " + mod.getNom());
+		 * System.out.println("Né(e) le" + " " + mod.getDateNaissance());
+		 * System.out.println("Pays de Résidence" + " " + mod.getPays());
+		 */
 
 	}
 

@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Post {
 
 	private int msgId = 0;
-	String messages[][] = new String[10][3];
+	private String messages[][] = new String[10][3];
 
 	private String auteur = " ";
 

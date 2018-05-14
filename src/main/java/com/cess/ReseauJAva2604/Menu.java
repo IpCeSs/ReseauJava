@@ -1,12 +1,15 @@
 package com.cess.ReseauJAva2604;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
 
 	private boolean afficherMenu = true;
-	private boolean afficheFormNewUser=true;
+	private boolean afficheFormNewUser = true;
+	ArrayList<String> amis;
+	Scanner sc;
 
 	/**
 	 * 
@@ -17,50 +20,68 @@ public class Menu {
 	Post post;
 	Utilisateur user;
 	Moderateur mod;
-/**
- * 
- * @param user
- * @param mod
- * @param post
- */
+
+	/**
+	 * 
+	 * @param user
+	 * @param mod
+	 * @param post
+	 */
+
 	@SuppressWarnings("finally")
 	public void Menu(Utilisateur user, Moderateur mod, Post post) {
 
+		/**
+		 * On peuple l'arrayList amis déclarée au dessus
+		 */
+		amis = new ArrayList();
+		amis.add("Jean");
+		amis.add("Bon");
+		amis.add("Beurre");
+		
+		sc = new Scanner(System.in);
+
 		this.post = post;
 		Utilisateur currentUser = null;
-		while(afficheFormNewUser) {
-		try {
-			Scanner sc = new Scanner(System.in);
-			System.out.println("\nWelcome to CessSpot \n");
-			System.out.println("Choisissez votre niveau d'autorisation\n");
-			System.out.println("utilisateur 0 / Admin 1 / super Admin 2");
-			int level = sc.nextInt();
-			sc.nextLine();
+		while (afficheFormNewUser) {
+			try {
+				Scanner sc = new Scanner(System.in);
+				System.out.println("\nWelcome to CessSpot \n");
+				System.out.println("Choisissez votre niveau d'autorisation\n");
+				System.out.println("utilisateur 0 / Admin 1 / super Admin 2");
+				int level = sc.nextInt();
+				sc.nextLine();
 
-			switch (level)
+				switch (level)
 
-			{
+				{
 
-			case 0:
-				currentUser = user;
-				user.setUser();
+				case 0:
+					currentUser = user;
+					this.user = user;
+					user.setUser();
 
-				break;
+					break;
 
-			default:
-				currentUser = mod;
-				mod.setModo(level);
+				default:
+					currentUser = mod;
+					this.mod = mod;
+					mod.setModo(level);
 
-				break;
+					break;
 
+				}
+				afficheFormNewUser = false;
+			} catch (InputMismatchException e) {
+				System.out.println("Vous n'avez pas tapé l'un des choix possibles!");
+				// input.reset();
+			} finally {
+				/**
+				 * continue permet de réexecuter la boucle si l'erreur est rencontrée ATTENTION
+				 * ne fonctionne que dans le cadre d'une boucle
+				 */
+				continue;
 			}
-			afficheFormNewUser=false;
-		} catch (InputMismatchException e) {
-			System.out.println("Vous n'avez pas tapé l'un des choix possibles!");
-			// input.reset();
-		} finally {
-			continue;
-		}
 		}
 
 		while (afficherMenu) {
@@ -123,15 +144,34 @@ public class Menu {
 		}
 	}
 
-	private void displayFriend() { // TODO Auto-generated method stub
-		// System.out.println("Amis de " + users[1][1]); System.out.println( amis[0][1]
-		// + " " + amis[0][0] + " pays de résidence : " + amis[0][3] + " est né(e) le "
-		// + amis[0][4]);
+	private void displayFriend() {
+		System.out.println("Liste de vos amis :") ;
+		for (int i = 0; i < amis.size(); i++) {
+			System.out.println(  amis.get(i));
+		}
 
 	}
 
 	private void addFriend() { // TODO Auto-generated method stub
+		System.out.println("Saisissez le nom de votre ami");
+		String addAmi = sc.nextLine();
+		amis.add(addAmi);
+		System.out.println("Ami ajouté avec succès!");
+		displayFriend();
+	}
 
+	private void deleteFriend() {
+		displayFriend();
+		
+		System.out.println("Saisissez le nom de votre ami");
+		String supAmi = sc.nextLine();
+		if(amis.contains(supAmi)) {
+		amis.remove(supAmi);
+		System.out.println("Ami supprimé avec succès!");
+		}else {
+			System.out.println("Erreur de saisie, cet ami n'existe pas!");
+		}
+	
 	}
 
 	/**
@@ -141,7 +181,12 @@ public class Menu {
 
 	private void read() {
 		String[][] messages = this.post.getPost();
-		for (int i = 0; i < messages.length; i++) {
+		/**
+		 * la seconde condition permet de ne selectionner que les messages qui ont un
+		 * auteur
+		 */
+		for (int i = 0; i < messages.length && messages[i][0] != null; i++) {
+
 			System.out.println("Auteur   " + messages[i][0]);
 			System.out.println("Titre   " + messages[i][1]);
 			System.out.println("Message   " + messages[i][2] + "\n");
@@ -179,11 +224,10 @@ public class Menu {
 	 */
 
 	private void showProfil() { // TODO EN COURS
-		/*
-		 * System.out.println("Profil de " + mod.getPrenom() + " " + mod.getNom());
-		 * System.out.println("Né(e) le" + " " + mod.getDateNaissance());
-		 * System.out.println("Pays de Résidence" + " " + mod.getPays());
-		 */
+
+		System.out.println("Profil de " + user.getPrenom() + " " + user.getNom());
+		System.out.println("Né(e) le" + " " + user.getDateNaissance());
+		System.out.println("Pays de Résidence" + " " + user.getPays());
 
 	}
 
@@ -225,7 +269,7 @@ public class Menu {
 	 */
 
 	private void menuU() {
-		Scanner sc = new Scanner(System.in);
+		
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
 		System.out.println("1- Affichez votre profil");
@@ -239,6 +283,7 @@ public class Menu {
 		System.out.println("5- Ajouter un ami");
 
 		System.out.println("6- Afficher votre liste d'ami");
+		System.out.println("7- Supprimer un ami");
 
 		System.out.println("0- Quitter CessSpot");
 
@@ -280,6 +325,11 @@ public class Menu {
 			displayFriend();
 
 			break;
+		case 7:
+
+			deleteFriend();
+
+			break;
 		case 0:
 			exit();
 
@@ -293,7 +343,7 @@ public class Menu {
 	 */
 
 	private void menuM() {
-		Scanner sc = new Scanner(System.in);
+		
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
@@ -385,7 +435,7 @@ public class Menu {
 	 * Menu SuperModerateur
 	 */
 	private void menuS() {
-		Scanner sc = new Scanner(System.in);
+		
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 

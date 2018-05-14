@@ -13,6 +13,7 @@ public class App {
 		/**
 		 * @info on instancie un nouvel utilisateur
 		 */
+		
 		Utilisateur user = new Utilisateur();
 		/**
 		 * @info on instancie un nouveau Modérateur (pour messages)

@@ -1,5 +1,10 @@
 package com.cess.ReseauJAva2604;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -10,6 +15,16 @@ public class Menu {
 	private boolean afficheFormNewUser = true;
 	ArrayList<String> amis;
 	Scanner sc;
+	Utilisateur currentUser;
+	/**
+	 * connexion BDD
+	 */
+	String url = "jdbc:mysql://localhost/java";
+	String login = "root";
+	String passwd = "";
+	Connection cn = null;
+	Statement st = null;
+	ResultSet rs = null;
 
 	/**
 	 * 
@@ -29,7 +44,7 @@ public class Menu {
 	 */
 
 	@SuppressWarnings("finally")
-	public void Menu(Utilisateur user, Moderateur mod, Post post) {
+	public Menu(Utilisateur user, Moderateur mod, Post post) {
 
 		/**
 		 * On peuple l'arrayList amis déclarée au dessus
@@ -38,11 +53,11 @@ public class Menu {
 		amis.add("Jean");
 		amis.add("Bon");
 		amis.add("Beurre");
-		
+
 		sc = new Scanner(System.in);
 
 		this.post = post;
-		Utilisateur currentUser = null;
+
 		while (afficheFormNewUser) {
 			try {
 				Scanner sc = new Scanner(System.in);
@@ -57,7 +72,7 @@ public class Menu {
 				{
 
 				case 0:
-					currentUser = user;
+					this.currentUser = user;
 					this.user = user;
 					user.setUser();
 
@@ -109,12 +124,35 @@ public class Menu {
 	}
 
 	private void allUsers() {
-		String[][] users = this.user.getUsers();
-		for (int i = 0; i < users.length; i++) {
-			System.out.println("Nom :  " + users[i][0]);
-			System.out.println("Prénom :  " + users[i][1]);
-			System.out.println("Pays de résidence :   " + users[i][2]);
-			System.out.println("Né(e) le :   " + users[i][3] + "\n");
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			cn = DriverManager.getConnection(url, login, passwd);
+			st = cn.createStatement();
+			String sql = "SELECT * FROM user";
+			rs = st.executeQuery(sql);
+			/**
+			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
+			 * chaque colonne du tableau
+			 */
+			while (rs.next()) {
+				System.out.println(rs.getString("nom") + ' ' + rs.getString("prenom"));
+
+				System.out.println(rs.getString("dateNaissance") + ' ' + rs.getString("pays"));
+
+				System.out.println("\n");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				cn.close();
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -145,10 +183,43 @@ public class Menu {
 	}
 
 	private void displayFriend() {
-		System.out.println("Liste de vos amis :") ;
-		for (int i = 0; i < amis.size(); i++) {
-			System.out.println(  amis.get(i));
+		System.out.println("Liste de vos amis :");
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			cn = DriverManager.getConnection(url, login, passwd);
+			st = cn.createStatement();
+			String sql = "SELECT * FROM user, ami INNER JOIN ami a ON ami.user_id=user.id INNER JOIN ami b ON ami.friend_id=user.id";
+			rs = st.executeQuery(sql);
+			/**
+			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
+			 * chaque colonne du tableau
+			 */
+			while (rs.next()) {
+				System.out.println(rs.getString("nom") + ' ' + rs.getString("prenom"));
+
+				System.out.println(rs.getString("dateNaissance") + ' ' + rs.getString("pays"));
+
+				System.out.println("\n");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				cn.close();
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+
+		/**
+		 * ARRAY lIST for (int i = 0; i < amis.size(); i++) {
+		 * System.out.println(amis.get(i)); }
+		 */
 
 	}
 
@@ -162,16 +233,16 @@ public class Menu {
 
 	private void deleteFriend() {
 		displayFriend();
-		
+
 		System.out.println("Saisissez le nom de votre ami");
 		String supAmi = sc.nextLine();
-		if(amis.contains(supAmi)) {
-		amis.remove(supAmi);
-		System.out.println("Ami supprimé avec succès!");
-		}else {
+		if (amis.contains(supAmi)) {
+			amis.remove(supAmi);
+			System.out.println("Ami supprimé avec succès!");
+		} else {
 			System.out.println("Erreur de saisie, cet ami n'existe pas!");
 		}
-	
+
 	}
 
 	/**
@@ -225,9 +296,10 @@ public class Menu {
 
 	private void showProfil() { // TODO EN COURS
 
-		System.out.println("Profil de " + user.getPrenom() + " " + user.getNom());
-		System.out.println("Né(e) le" + " " + user.getDateNaissance());
-		System.out.println("Pays de Résidence" + " " + user.getPays());
+		System.out.println(currentUser.getNom());
+		System.out.println(currentUser.getPrenom());
+		System.out.println(currentUser.getDateNaissance());
+		System.out.println(currentUser.getPays());
 
 	}
 
@@ -269,7 +341,7 @@ public class Menu {
 	 */
 
 	private void menuU() {
-		
+
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
 		System.out.println("1- Affichez votre profil");
@@ -343,7 +415,6 @@ public class Menu {
 	 */
 
 	private void menuM() {
-		
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
@@ -435,7 +506,6 @@ public class Menu {
 	 * Menu SuperModerateur
 	 */
 	private void menuS() {
-		
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 

@@ -1,5 +1,7 @@
 package com.cess.ReseauJAva2604;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 /**
  * 
@@ -38,23 +40,69 @@ public class Utilisateur extends Personne implements Relation{
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Entrez votre nom");
 		nom = sc.nextLine();
-		users[userId][0] = nom;
+		
 
 		System.out.println("Entrez votre prénom");
 		prenom = sc.nextLine();
-		users[userId][1] = prenom;
+		
 
 		System.out.println("Entrez votre pays de résidence");
 		pays = sc.nextLine();
-		users[userId][2] = pays;
+		
 
 		System.out.println("Entrez votre date de naissance");
 		dateNaissance = sc.nextLine();
-		users[userId][3] = dateNaissance;
+		
+		sauverEnBase(nom, prenom, dateNaissance, pays);
 
-		userId++;
+		
 	}
 
+	public static void sauverEnBase(String nom, String prenom, String dateNaissance, String pays) {
+		/**
+		 * infos d'accès à la BDD
+		 */
+		String url = "jdbc:mysql://localhost/java";
+		String login = "root";
+		String passwd = "";
+		java.sql.Connection cn = null;
+		java.sql.Statement st = null;
+		try {
+			/**
+			 * Chargement du driver
+			 */
+			Class.forName("com.mysql.jdbc.Driver");
+			/**
+			 * récupération de la connexion
+			 */
+			cn = DriverManager.getConnection(url, login, passwd);
+			/**
+			 * Création d'un statement
+			 */
+			st = cn.createStatement();
+			String sql = "INSERT INTO `user` (`nom`,`prenom`,`dateNaissance`,`pays`) VALUES ('" + nom + "','" + prenom + "','" + dateNaissance + "','" + pays + "')";
+			/**
+			 * exercution requete
+			 */
+			st.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				/**
+				 * libérer ressource memoire, fermeture connection
+				 */
+				cn.close();
+				st.close();
+				
+			}catch (SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
 	public static int getUserId() {
 		return userId;
 	}
@@ -102,9 +150,12 @@ public class Utilisateur extends Personne implements Relation{
 	public boolean isModerateur() {
 		return false;
 	}
-	
+
 	public void ajouterAmi() {
+		// TODO Auto-generated method stub
 		
 	}
+	
+	
 
 }

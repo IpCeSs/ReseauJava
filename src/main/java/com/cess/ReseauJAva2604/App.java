@@ -26,13 +26,14 @@ public class App {
 		/**
 		 * @info on instancie un nouveau Menu (pour messages)
 		 */
-		Menu menu = new Menu();
+		Menu menu = new Menu(user, mod, post);
 		/**
 		 * @info on exécute la fonction Menu() de la classe Menu
 		 */
-		menu.Menu(user, mod, post);
+	//	menu.Menu(user, mod, post);
 
 	}
+	
 }
 /// Partie 2 sans tableau/////////////////////////////////
 

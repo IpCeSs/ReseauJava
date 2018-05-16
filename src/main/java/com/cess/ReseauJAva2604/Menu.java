@@ -16,6 +16,8 @@ public class Menu {
 	ArrayList<String> amis;
 	Scanner sc;
 	Utilisateur currentUser;
+	int friend;
+
 	/**
 	 * connexion BDD
 	 */
@@ -79,7 +81,7 @@ public class Menu {
 					break;
 
 				default:
-					currentUser = mod;
+					this.currentUser = mod;
 					this.mod = mod;
 					mod.setModo(level);
 
@@ -135,9 +137,10 @@ public class Menu {
 			 * chaque colonne du tableau
 			 */
 			while (rs.next()) {
-				System.out.println(rs.getString("nom") + ' ' + rs.getString("prenom"));
+				System.out.println(rs.getInt("id") + " " + rs.getString("nom") + " " + rs.getString("prenom"));
 
-				System.out.println(rs.getString("dateNaissance") + ' ' + rs.getString("pays"));
+				// System.out.println(rs.getString("dateNaissance") + ' ' +
+				// rs.getString("pays"));
 
 				System.out.println("\n");
 
@@ -181,7 +184,11 @@ public class Menu {
 			return false;
 		}
 	}
+	
 
+/**
+ * ne marche pas display friend
+ */
 	private void displayFriend() {
 		System.out.println("Liste de vos amis :");
 
@@ -189,18 +196,20 @@ public class Menu {
 			Class.forName("com.mysql.jdbc.Driver");
 			cn = DriverManager.getConnection(url, login, passwd);
 			st = cn.createStatement();
-			String sql = "SELECT * FROM user, ami INNER JOIN ami a ON ami.user_id=user.id INNER JOIN ami b ON ami.friend_id=user.id";
+			String sql = "SELECT am.friend_id, u.nom, u.prenom FROM ami am JOIN ami a ON a.user_id=am.friend_id AND a.friend_id=am.user_id JOIN user u ON u.id =am.friend_id WHERE am.user_id= u.id";
 			rs = st.executeQuery(sql);
 			/**
 			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
 			 * chaque colonne du tableau
 			 */
 			while (rs.next()) {
-				System.out.println(rs.getString("nom") + ' ' + rs.getString("prenom"));
 
-				System.out.println(rs.getString("dateNaissance") + ' ' + rs.getString("pays"));
+				System.out.println(rs.getString("nom") + " "  + rs.getString("prenom"));
 
-				System.out.println("\n");
+				// System.out.println(rs.getString("dateNaissance") + ' ' +
+				// rs.getString("pays"));
+
+				// System.out.println("\n");
 
 			}
 		} catch (SQLException e) {
@@ -224,11 +233,57 @@ public class Menu {
 	}
 
 	private void addFriend() { // TODO Auto-generated method stub
-		System.out.println("Saisissez le nom de votre ami");
-		String addAmi = sc.nextLine();
-		amis.add(addAmi);
-		System.out.println("Ami ajouté avec succès!");
-		displayFriend();
+		allUsers();
+
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Entrez le numéro correspondant à votre");
+		this.friend = sc.nextInt();
+		sc.nextLine();
+
+		try {
+			/**
+			 * Chargement du driver
+			 */
+			Class.forName("com.mysql.jdbc.Driver");
+			/**
+			 * récupération de la connexion
+			 */
+			cn = DriverManager.getConnection(url, login, passwd);
+			/**
+			 * Création d'un statement
+			 */
+			st = cn.createStatement();
+			String sql = "INSERT INTO `ami` (`user_id`,`friend_id`) VALUES (" + currentUser.getId() + ",'" + this.friend
+					+ "')";
+			/**
+			 * exercution requete
+			 */
+			st.executeUpdate(sql);
+			displayFriend();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				/**
+				 * libérer ressource memoire, fermeture connection
+				 */
+				cn.close();
+				st.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * System.out.println("Saisissez le nom de votre ami"); String addAmi =
+		 * sc.nextLine(); amis.add(addAmi); System.out.println("Ami ajouté avec
+		 * succès!");
+		 */
+
 	}
 
 	private void deleteFriend() {

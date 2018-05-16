@@ -2,6 +2,7 @@ package com.cess.ReseauJAva2604;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -184,27 +185,38 @@ public class Menu {
 			return false;
 		}
 	}
-	
 
-/**
- * ne marche pas display friend
- */
+	/**
+	 * ne marche pas display friend
+	 */
 	private void displayFriend() {
 		System.out.println("Liste de vos amis :");
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			cn = DriverManager.getConnection(url, login, passwd);
-			st = cn.createStatement();
-			String sql = "SELECT am.friend_id, u.nom, u.prenom FROM ami am JOIN ami a ON a.user_id=am.friend_id AND a.friend_id=am.user_id JOIN user u ON u.id =am.friend_id WHERE am.user_id= u.id";
-			rs = st.executeQuery(sql);
+			// st = cn.createStatement();
+			/**
+			 * On specifie amigo qui correspond à l'user ami pour dire que ce sont ses
+			 * données à lui que l'on veut et non celles du current user
+			 */
+			String sql = "SELECT amigo.nom, amigo.prenom FROM user current JOIN ami a ON a.user_id=current.id JOIN user amigo ON amigo.id=a.friend_id WHERE current.id =?";
+
+			PreparedStatement pstat = cn.prepareStatement(sql);
+			/**
+			 * on set une valeur pour le ? si on avait plusieurs point d'interogations, on
+			 * accederai au prenmier avec 1 au second avec 2 etc
+			 */
+			pstat.setInt(1, currentUser.getId());
+			rs = pstat.executeQuery();
+
 			/**
 			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
 			 * chaque colonne du tableau
 			 */
 			while (rs.next()) {
 
-				System.out.println(rs.getString("nom") + " "  + rs.getString("prenom"));
+				System.out.println(rs.getString("nom") + " " + rs.getString("prenom"));
 
 				// System.out.println(rs.getString("dateNaissance") + ' ' +
 				// rs.getString("pays"));

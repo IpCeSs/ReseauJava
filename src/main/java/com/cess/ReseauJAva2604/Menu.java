@@ -1,5 +1,10 @@
 package com.cess.ReseauJAva2604;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -10,6 +15,18 @@ public class Menu {
 	private boolean afficheFormNewUser = true;
 	ArrayList<String> amis;
 	Scanner sc;
+	Utilisateur currentUser;
+	int friend;
+
+	/**
+	 * connexion BDD
+	 */
+	String url = "jdbc:mysql://localhost/java";
+	String login = "root";
+	String passwd = "";
+	Connection cn = null;
+	Statement st = null;
+	ResultSet rs = null;
 
 	/**
 	 * 
@@ -29,7 +46,7 @@ public class Menu {
 	 */
 
 	@SuppressWarnings("finally")
-	public void Menu(Utilisateur user, Moderateur mod, Post post) {
+	public Menu(Utilisateur user, Moderateur mod, Post post) {
 
 		/**
 		 * On peuple l'arrayList amis déclarée au dessus
@@ -38,11 +55,11 @@ public class Menu {
 		amis.add("Jean");
 		amis.add("Bon");
 		amis.add("Beurre");
-		
+
 		sc = new Scanner(System.in);
 
 		this.post = post;
-		Utilisateur currentUser = null;
+
 		while (afficheFormNewUser) {
 			try {
 				Scanner sc = new Scanner(System.in);
@@ -57,14 +74,14 @@ public class Menu {
 				{
 
 				case 0:
-					currentUser = user;
+					this.currentUser = user;
 					this.user = user;
 					user.setUser();
 
 					break;
 
 				default:
-					currentUser = mod;
+					this.currentUser = mod;
 					this.mod = mod;
 					mod.setModo(level);
 
@@ -109,12 +126,36 @@ public class Menu {
 	}
 
 	private void allUsers() {
-		String[][] users = this.user.getUsers();
-		for (int i = 0; i < users.length; i++) {
-			System.out.println("Nom :  " + users[i][0]);
-			System.out.println("Prénom :  " + users[i][1]);
-			System.out.println("Pays de résidence :   " + users[i][2]);
-			System.out.println("Né(e) le :   " + users[i][3] + "\n");
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			cn = DriverManager.getConnection(url, login, passwd);
+			st = cn.createStatement();
+			String sql = "SELECT * FROM user";
+			rs = st.executeQuery(sql);
+			/**
+			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
+			 * chaque colonne du tableau
+			 */
+			while (rs.next()) {
+				System.out.println(rs.getInt("id") + " " + rs.getString("nom") + " " + rs.getString("prenom"));
+
+				// System.out.println(rs.getString("dateNaissance") + ' ' +
+				// rs.getString("pays"));
+
+				System.out.println("\n");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				cn.close();
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -143,35 +184,120 @@ public class Menu {
 			return false;
 		}
 	}
+	
 
+/**
+ * ne marche pas display friend
+ */
 	private void displayFriend() {
-		System.out.println("Liste de vos amis :") ;
-		for (int i = 0; i < amis.size(); i++) {
-			System.out.println(  amis.get(i));
+		System.out.println("Liste de vos amis :");
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			cn = DriverManager.getConnection(url, login, passwd);
+			st = cn.createStatement();
+			String sql = "SELECT am.friend_id, u.nom, u.prenom FROM ami am JOIN ami a ON a.user_id=am.friend_id AND a.friend_id=am.user_id JOIN user u ON u.id =am.friend_id WHERE am.user_id= u.id";
+			rs = st.executeQuery(sql);
+			/**
+			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
+			 * chaque colonne du tableau
+			 */
+			while (rs.next()) {
+
+				System.out.println(rs.getString("nom") + " "  + rs.getString("prenom"));
+
+				// System.out.println(rs.getString("dateNaissance") + ' ' +
+				// rs.getString("pays"));
+
+				// System.out.println("\n");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				cn.close();
+				st.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
+
+		/**
+		 * ARRAY lIST for (int i = 0; i < amis.size(); i++) {
+		 * System.out.println(amis.get(i)); }
+		 */
 
 	}
 
 	private void addFriend() { // TODO Auto-generated method stub
-		System.out.println("Saisissez le nom de votre ami");
-		String addAmi = sc.nextLine();
-		amis.add(addAmi);
-		System.out.println("Ami ajouté avec succès!");
-		displayFriend();
+		allUsers();
+
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Entrez le numéro correspondant à votre");
+		this.friend = sc.nextInt();
+		sc.nextLine();
+
+		try {
+			/**
+			 * Chargement du driver
+			 */
+			Class.forName("com.mysql.jdbc.Driver");
+			/**
+			 * récupération de la connexion
+			 */
+			cn = DriverManager.getConnection(url, login, passwd);
+			/**
+			 * Création d'un statement
+			 */
+			st = cn.createStatement();
+			String sql = "INSERT INTO `ami` (`user_id`,`friend_id`) VALUES (" + currentUser.getId() + ",'" + this.friend
+					+ "')";
+			/**
+			 * exercution requete
+			 */
+			st.executeUpdate(sql);
+			displayFriend();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				/**
+				 * libérer ressource memoire, fermeture connection
+				 */
+				cn.close();
+				st.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * System.out.println("Saisissez le nom de votre ami"); String addAmi =
+		 * sc.nextLine(); amis.add(addAmi); System.out.println("Ami ajouté avec
+		 * succès!");
+		 */
+
 	}
 
 	private void deleteFriend() {
 		displayFriend();
-		
+
 		System.out.println("Saisissez le nom de votre ami");
 		String supAmi = sc.nextLine();
-		if(amis.contains(supAmi)) {
-		amis.remove(supAmi);
-		System.out.println("Ami supprimé avec succès!");
-		}else {
+		if (amis.contains(supAmi)) {
+			amis.remove(supAmi);
+			System.out.println("Ami supprimé avec succès!");
+		} else {
 			System.out.println("Erreur de saisie, cet ami n'existe pas!");
 		}
-	
+
 	}
 
 	/**
@@ -225,9 +351,10 @@ public class Menu {
 
 	private void showProfil() { // TODO EN COURS
 
-		System.out.println("Profil de " + user.getPrenom() + " " + user.getNom());
-		System.out.println("Né(e) le" + " " + user.getDateNaissance());
-		System.out.println("Pays de Résidence" + " " + user.getPays());
+		System.out.println(currentUser.getNom());
+		System.out.println(currentUser.getPrenom());
+		System.out.println(currentUser.getDateNaissance());
+		System.out.println(currentUser.getPays());
 
 	}
 
@@ -269,7 +396,7 @@ public class Menu {
 	 */
 
 	private void menuU() {
-		
+
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
 		System.out.println("1- Affichez votre profil");
@@ -343,7 +470,6 @@ public class Menu {
 	 */
 
 	private void menuM() {
-		
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 
@@ -435,7 +561,6 @@ public class Menu {
 	 * Menu SuperModerateur
 	 */
 	private void menuS() {
-		
 
 		System.out.println("Que souhaitez vous faire aujourd'hui? (Tapez le chiffre correpondant)\n");
 

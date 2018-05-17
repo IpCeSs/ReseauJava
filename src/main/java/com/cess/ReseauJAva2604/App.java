@@ -1,5 +1,7 @@
 package com.cess.ReseauJAva2604;
 
+import javax.naming.ConfigurationException;
+
 //import java.util.Scanner;
 
 public class App {

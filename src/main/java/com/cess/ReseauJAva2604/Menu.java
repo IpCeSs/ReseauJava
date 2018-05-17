@@ -1,7 +1,6 @@
 package com.cess.ReseauJAva2604;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,16 +17,11 @@ public class Menu {
 	Scanner sc;
 	Utilisateur currentUser;
 	int friend;
-
+	int choix;
 	/**
 	 * connexion BDD
 	 */
-	String url = "jdbc:mysql://localhost/java";
-	String login = "root";
-	String passwd = "";
-	Connection cn = null;
-	Statement st = null;
-	ResultSet rs = null;
+	
 
 	/**
 	 * 
@@ -120,19 +114,20 @@ public class Menu {
 				menuS();
 
 			}
-
-			afficherMenu = retour();
+			
+		afficherMenu = retour();
+			
+			
 
 		}
 	}
 
 	private void allUsers() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, passwd);
-			st = cn.createStatement();
+			
+			Statement st = Connexion.getInstance().createStatement();
 			String sql = "SELECT * FROM user";
-			rs = st.executeQuery(sql);
+			ResultSet rs = st.executeQuery(sql);
 			/**
 			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
 			 * chaque colonne du tableau
@@ -148,16 +143,7 @@ public class Menu {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				cn.close();
-				st.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 
 	}
 
@@ -182,6 +168,8 @@ public class Menu {
 		if (r == 'O') {
 			return true;
 		} else {
+			Connexion.close();
+			System.out.println("A bientôt sur CessSpot!!");
 			return false;
 		}
 	}
@@ -193,22 +181,20 @@ public class Menu {
 		System.out.println("Liste de vos amis :");
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, passwd);
-			// st = cn.createStatement();
+			
 			/**
 			 * On specifie amigo qui correspond à l'user ami pour dire que ce sont ses
 			 * données à lui que l'on veut et non celles du current user
 			 */
 			String sql = "SELECT amigo.nom, amigo.prenom FROM user current JOIN ami a ON a.user_id=current.id JOIN user amigo ON amigo.id=a.friend_id WHERE current.id =?";
 
-			PreparedStatement pstat = cn.prepareStatement(sql);
+			PreparedStatement pstat = Connexion.getInstance().prepareStatement(sql);
 			/**
 			 * on set une valeur pour le ? si on avait plusieurs point d'interogations, on
 			 * accederai au prenmier avec 1 au second avec 2 etc
 			 */
 			pstat.setInt(1, currentUser.getId());
-			rs = pstat.executeQuery();
+			ResultSet rs = pstat.executeQuery();
 
 			/**
 			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
@@ -226,17 +212,7 @@ public class Menu {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				cn.close();
-				st.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
+		} 
 		/**
 		 * ARRAY lIST for (int i = 0; i < amis.size(); i++) {
 		 * System.out.println(amis.get(i)); }
@@ -253,18 +229,11 @@ public class Menu {
 		sc.nextLine();
 
 		try {
-			/**
-			 * Chargement du driver
-			 */
-			Class.forName("com.mysql.jdbc.Driver");
-			/**
-			 * récupération de la connexion
-			 */
-			cn = DriverManager.getConnection(url, login, passwd);
+			
 			/**
 			 * Création d'un statement
 			 */
-			st = cn.createStatement();
+			Statement st = Connexion.getInstance().createStatement();
 			String sql = "INSERT INTO `ami` (`user_id`,`friend_id`) VALUES (" + currentUser.getId() + ",'" + this.friend
 					+ "')";
 			/**
@@ -275,20 +244,7 @@ public class Menu {
 		} catch (SQLException e) {
 			e.printStackTrace();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				/**
-				 * libérer ressource memoire, fermeture connection
-				 */
-				cn.close();
-				st.close();
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		} 		
 
 		/**
 		 * System.out.println("Saisissez le nom de votre ami"); String addAmi =
@@ -370,18 +326,7 @@ public class Menu {
 
 	}
 
-	private void moderateur() {
-		modifyMessage();
-		deleteMessage();
-
-	}
-
-	private void superModerateur() {
-		modifyMessage();
-		deleteMessage();
-		deleteUser();
-
-	}
+	
 
 	private void deleteUser() {
 		// TODO Auto-generated method stub
@@ -400,7 +345,9 @@ public class Menu {
 	}
 
 	private void exit() {
-		System.out.println("A bientôt sur CessSpot!!");
+		
+		System.out.println("Voulez vous vraiment quitter CessSpot ?");
+		
 	}
 
 	/**
@@ -471,10 +418,14 @@ public class Menu {
 			break;
 		case 0:
 			exit();
+			
 
 			break;
 
 		}
+	
+			
+		
 	}
 
 	/**
@@ -565,8 +516,9 @@ public class Menu {
 
 		}
 
-		afficherMenu = retour();
-
+		
+		
+	
 	}
 
 	/**
@@ -663,5 +615,8 @@ public class Menu {
 			break;
 
 		}
+		
+			
+			
 	}
 }

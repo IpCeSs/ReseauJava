@@ -5,10 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Connexion {
-	
+
 	/**
-	 * On crée un singleton car l'objet connexion doit être instancié seulement une fois
-	 * tout private
+	 * On crée un singleton car l'objet connexion doit être instancié seulement une
+	 * fois tout private
 	 */
 
 	private static String url = "jdbc:mysql://localhost/java";
@@ -18,8 +18,8 @@ public class Connexion {
 
 	public static Connection getInstance() {
 		/**
-		 * Si la connexion n'éxiste pas == null on la crée
-		 * sous entendu si elle existe on ne l'instancie pas à nouveau
+		 * Si la connexion n'éxiste pas == null on la crée sous entendu si elle existe
+		 * on ne l'instancie pas à nouveau
 		 */
 		if (cn == null) {
 			try {
@@ -35,14 +35,14 @@ public class Connexion {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-		}else {
+
+	/*	} else {
 			System.out.println("Connexion à la base de données déjà existante");
+		}*/
 		}
 		return cn;
 	}
-	
-	
+
 	public static void close() {
 		try {
 			cn.close();

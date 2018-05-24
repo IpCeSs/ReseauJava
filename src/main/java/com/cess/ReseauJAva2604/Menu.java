@@ -1,7 +1,5 @@
 package com.cess.ReseauJAva2604;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,23 +9,16 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
-
+	Scanner sc = new Scanner(System.in);
 	private boolean afficherMenu = true;
 	private boolean afficheFormNewUser = true;
-	ArrayList<String> amis;
-	Scanner sc;
+
 	Utilisateur currentUser;
 	int friend;
-
+	int choix;
 	/**
 	 * connexion BDD
 	 */
-	String url = "jdbc:mysql://localhost/java";
-	String login = "root";
-	String passwd = "";
-	Connection cn = null;
-	Statement st = null;
-	ResultSet rs = null;
 
 	/**
 	 * 
@@ -37,7 +28,8 @@ public class Menu {
 	 */
 	Post post;
 	Utilisateur user;
-	Moderateur mod;
+	Utilisateur mod;
+	private UtilisateurDAO uDao = new UtilisateurDAO();
 
 	/**
 	 * 
@@ -49,21 +41,13 @@ public class Menu {
 	@SuppressWarnings("finally")
 	public Menu(Utilisateur user, Moderateur mod, Post post) {
 
-		/**
-		 * On peuple l'arrayList amis déclarée au dessus
-		 */
-		amis = new ArrayList();
-		amis.add("Jean");
-		amis.add("Bon");
-		amis.add("Beurre");
-
 		sc = new Scanner(System.in);
 
 		this.post = post;
 
 		while (afficheFormNewUser) {
 			try {
-				Scanner sc = new Scanner(System.in);
+
 				System.out.println("\nWelcome to CessSpot \n");
 				System.out.println("Choisissez votre niveau d'autorisation\n");
 				System.out.println("utilisateur 0 / Admin 1 / super Admin 2");
@@ -77,14 +61,16 @@ public class Menu {
 				case 0:
 					this.currentUser = user;
 					this.user = user;
-					user.setUser();
+					setUser();
+					this.currentUser = uDao.create(user);
 
 					break;
 
 				default:
 					this.currentUser = mod;
 					this.mod = mod;
-					mod.setModo(level);
+					setUser();
+					this.currentUser = uDao.createMod(mod, level);
 
 					break;
 
@@ -115,7 +101,7 @@ public class Menu {
 				menuM();
 			}
 
-			else {
+			else if (currentUser.isModerateur() == true && ((Moderateur) currentUser).getModo() == 2)  {
 
 				menuS();
 
@@ -124,41 +110,6 @@ public class Menu {
 			afficherMenu = retour();
 
 		}
-	}
-
-	private void allUsers() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, passwd);
-			st = cn.createStatement();
-			String sql = "SELECT * FROM user";
-			rs = st.executeQuery(sql);
-			/**
-			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
-			 * chaque colonne du tableau
-			 */
-			while (rs.next()) {
-				System.out.println(rs.getInt("id") + " " + rs.getString("nom") + " " + rs.getString("prenom"));
-
-				// System.out.println(rs.getString("dateNaissance") + ' ' +
-				// rs.getString("pays"));
-
-				System.out.println("\n");
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				cn.close();
-				st.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 	public boolean retour() {
@@ -174,148 +125,61 @@ public class Menu {
 	 */
 	private boolean demanderOuiNon() {
 		char r;
-		Scanner ret = new Scanner(System.in);
+
 		do {
 			System.out.println("Répondre par O / N");
-			r = ret.nextLine().charAt(0);
+			r = sc.nextLine().charAt(0);
 		} while (r != 'O' && r != 'N');
 		if (r == 'O') {
 			return true;
 		} else {
+			Connexion.close();
+			System.out.println("A bientôt sur CessSpot!!");
 			return false;
 		}
 	}
 
-	/**
-	 * ne marche pas display friend
-	 */
-	private void displayFriend() {
-		System.out.println("Liste de vos amis :");
+	public void setUser() {
 
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			cn = DriverManager.getConnection(url, login, passwd);
-			// st = cn.createStatement();
-			/**
-			 * On specifie amigo qui correspond à l'user ami pour dire que ce sont ses
-			 * données à lui que l'on veut et non celles du current user
-			 */
-			String sql = "SELECT amigo.nom, amigo.prenom FROM user current JOIN ami a ON a.user_id=current.id JOIN user amigo ON amigo.id=a.friend_id WHERE current.id =?";
-
-			PreparedStatement pstat = cn.prepareStatement(sql);
-			/**
-			 * on set une valeur pour le ? si on avait plusieurs point d'interogations, on
-			 * accederai au prenmier avec 1 au second avec 2 etc
-			 */
-			pstat.setInt(1, currentUser.getId());
-			rs = pstat.executeQuery();
-
-			/**
-			 * on parcours le result set rs NB : on est obligé de faire une ligne pour
-			 * chaque colonne du tableau
-			 */
-			while (rs.next()) {
-
-				System.out.println(rs.getString("nom") + " " + rs.getString("prenom"));
-
-				// System.out.println(rs.getString("dateNaissance") + ' ' +
-				// rs.getString("pays"));
-
-				// System.out.println("\n");
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				cn.close();
-				st.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		/**
-		 * ARRAY lIST for (int i = 0; i < amis.size(); i++) {
-		 * System.out.println(amis.get(i)); }
-		 */
+		System.out.println("Entrez votre nom");
+		String nom = sc.nextLine();
+		currentUser.setNom(nom);
+		System.out.println("Entrez votre prénom");
+		String prenom = sc.nextLine();
+		currentUser.setPrenom(prenom);
+		System.out.println("Entrez votre pays de résidence");
+		String pays = sc.nextLine();
+		currentUser.setDateNaissance(pays);
+		System.out.println("Entrez votre date de naissance");
+		String dateNaissance = sc.nextLine();
+		currentUser.setPays(dateNaissance);
 
 	}
 
-	private void addFriend() { // TODO Auto-generated method stub
-		allUsers();
+	private void addFriend() {
+		/**
+		 * show all affiche tous les users
+		 */
+		displayUsers();
 
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Entrez le numéro correspondant à votre");
+		System.out.println("Entrez le numéro de la personne à ajouter en ami");
 		this.friend = sc.nextInt();
 		sc.nextLine();
-
-		try {
-			/**
-			 * Chargement du driver
-			 */
-			Class.forName("com.mysql.jdbc.Driver");
-			/**
-			 * récupération de la connexion
-			 */
-			cn = DriverManager.getConnection(url, login, passwd);
-			/**
-			 * Création d'un statement
-			 */
-			st = cn.createStatement();
-			String sql = "INSERT INTO `ami` (`user_id`,`friend_id`) VALUES (" + currentUser.getId() + ",'" + this.friend
-					+ "')";
-			/**
-			 * exercution requete
-			 */
-			st.executeUpdate(sql);
-			displayFriend();
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				/**
-				 * libérer ressource memoire, fermeture connection
-				 */
-				cn.close();
-				st.close();
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
+		uDao.addOneFriend(currentUser, this.friend);
 		/**
-		 * System.out.println("Saisissez le nom de votre ami"); String addAmi =
-		 * sc.nextLine(); amis.add(addAmi); System.out.println("Ami ajouté avec
-		 * succès!");
+		 * find affiche les amis du current user
 		 */
-
+		displayFriends();
 	}
 
 	private void deleteFriend() {
-		displayFriend();
-
-		System.out.println("Saisissez le nom de votre ami");
-		String supAmi = sc.nextLine();
-		if (amis.contains(supAmi)) {
-			amis.remove(supAmi);
-			System.out.println("Ami supprimé avec succès!");
-		} else {
-			System.out.println("Erreur de saisie, cet ami n'existe pas!");
-		}
+		displayFriends();
+		System.out.println("Entrez le numéro de l'ami à supprimer");
+		int friendDeletion = sc.nextInt();
+		sc.nextLine();
+		uDao.deleteFriend(currentUser, friendDeletion);
 
 	}
-
-	/**
-	 * 
-	 * @param messages
-	 */
 
 	private void read() {
 		String[][] messages = this.post.getPost();
@@ -340,26 +204,34 @@ public class Menu {
 
 	}
 
-	/**
-	 * 
-	 * @param utilisateur
-	 *            pour modifier les données de utilisateur
-	 */
+	private void displayUsers() {
+		System.out.println("Liste de tous les utilisateurs :");
+		ArrayList<Utilisateur> listeUsers = uDao.showAllUsers();
 
-	private void modifierProfil() { // TODO Auto-generated method stub
-		//////// ENCOURS
 		/**
-		 * user.setUser(); user.getUsers(); System.out.println("Nom : " +
-		 * user[userId][0]); System.out.println("Prénom : " + user[userId][1]);
-		 * System.out.println("Pays de résidence : " + users[userId][2]);
-		 * System.out.println("Né(e) le : " + user[userId][3] + "\n");
+		 * on parcours l'array liste issue de la BDD (return de la fonction
+		 * getallfriends)
 		 */
+		for (Utilisateur users : listeUsers) {
+			System.out.println(users.getId() + " "+ users.getNom() + " " + users.getPrenom() + "\n");
+		}
 	}
 
-	/**
-	 * 
-	 * @param utilisateur
-	 */
+	private void displayFriends() {
+		// TODO Auto-generated method stub
+		System.out.println("Liste de vos amis :");
+		ArrayList<Utilisateur> listeAmis = uDao.getAllFriends(currentUser);
+
+		/**
+		 * on parcours l'array liste issue de la BDD (return de la fonction
+		 * getallfriends)
+		 */
+		for (Utilisateur ami : listeAmis) {
+			
+			System.out.println(ami.getId()+" " +ami.getNom());
+		}
+
+	}
 
 	private void showProfil() { // TODO EN COURS
 
@@ -370,21 +242,13 @@ public class Menu {
 
 	}
 
-	private void moderateur() {
-		modifyMessage();
-		deleteMessage();
-
-	}
-
-	private void superModerateur() {
-		modifyMessage();
-		deleteMessage();
-		deleteUser();
-
-	}
-
 	private void deleteUser() {
-		// TODO Auto-generated method stub
+		displayUsers();
+
+		System.out.println("Entrez le numéro de l'utilisateur à supprimer");
+		int userDeletion = sc.nextInt();
+		sc.nextLine();
+		uDao.delete(userDeletion);
 
 	}
 
@@ -400,7 +264,9 @@ public class Menu {
 	}
 
 	private void exit() {
-		System.out.println("A bientôt sur CessSpot!!");
+
+		System.out.println("Voulez vous vraiment quitter CessSpot ?");
+
 	}
 
 	/**
@@ -413,16 +279,15 @@ public class Menu {
 
 		System.out.println("1- Affichez votre profil");
 
-		System.out.println("2- Modifier vos informations ");
+		System.out.println("2- Ecrire un message");
 
-		System.out.println("3- Ecrire un message");
+		System.out.println("3- Afficher un message");
 
-		System.out.println("4- Afficher un message");
+		System.out.println("4- Ajouter un ami");
 
-		System.out.println("5- Ajouter un ami");
+		System.out.println("5- Afficher votre liste d'ami");
 
-		System.out.println("6- Afficher votre liste d'ami");
-		System.out.println("7- Supprimer un ami");
+		System.out.println("6- Supprimer un ami");
 
 		System.out.println("0- Quitter CessSpot");
 
@@ -441,30 +306,25 @@ public class Menu {
 
 		case 2:
 
-			modifierProfil();
+			write();
 
 			break;
 		case 3:
 
-			write();
+			read();
 
 			break;
 		case 4:
 
-			read();
+			addFriend();
 
 			break;
 		case 5:
 
-			addFriend();
+			displayFriends();
 
 			break;
 		case 6:
-
-			displayFriend();
-
-			break;
-		case 7:
 
 			deleteFriend();
 
@@ -475,6 +335,7 @@ public class Menu {
 			break;
 
 		}
+
 	}
 
 	/**
@@ -487,25 +348,24 @@ public class Menu {
 
 		System.out.println("1- Affichez votre profil");
 
-		System.out.println("2- Modifier vos informations ");
+		System.out.println("2- Ecrire un message");
 
-		System.out.println("3- Ecrire un message");
+		System.out.println("3- Afficher un message");
 
-		System.out.println("4- Afficher un message");
+		System.out.println("4- Ajouter un ami");
 
-		System.out.println("5- Ajouter un ami");
-
-		System.out.println("6- Afficher votre liste d'ami");
+		System.out.println("5- Afficher votre liste d'ami");
+		System.out.println("6- Supprimer un ami");
 
 		System.out.println("0- Quitter CessSpot\n");
 
 		System.out.println("** ADMIN **");
 
-		System.out.println("7- Supprimer Messages Autres Utilisateurs");
+		System.out.println("6- Supprimer Messages Autres Utilisateurs");
 
-		System.out.println("8- Editer Messages Autres Utilisateurs");
+		System.out.println("7- Editer Messages Autres Utilisateurs");
 
-		System.out.println("9- afficher les utilisateurs");
+		System.out.println("8- afficher les utilisateurs");
 
 		int choix = sc.nextInt();
 		sc.nextLine();
@@ -522,51 +382,43 @@ public class Menu {
 
 		case 2:
 
-			modifierProfil();
+			write();
 
 			break;
 		case 3:
 
-			write();
+			read();
 
 			break;
 		case 4:
 
-			read();
+			addFriend();
 
 			break;
 		case 5:
 
-			addFriend();
-
-			break;
-		case 6:
-
-			displayFriend();
+			displayFriends();
 
 			break;
 		case 0:
 			exit();
 
 			break;
-		case 7:
-			deleteMessage();
+		case 6:
+			deleteFriend();
 
 			break;
 
-		case 8:
+		case 7:
 			modifyMessage();
 
 			break;
-		case 9:
-			allUsers();
+		case 8:
+			displayUsers();
 
 			break;
-
+		
 		}
-
-		afficherMenu = retour();
-
 	}
 
 	/**
@@ -578,28 +430,27 @@ public class Menu {
 
 		System.out.println("1- Affichez votre profil");
 
-		System.out.println("2- Modifier vos informations ");
+		System.out.println("2- Ecrire un message");
 
-		System.out.println("3- Ecrire un message");
+		System.out.println("3- Afficher un message");
 
-		System.out.println("4- Afficher un message");
+		System.out.println("4- Ajouter un ami");
 
-		System.out.println("5- Ajouter un ami");
-
-		System.out.println("6- Afficher votre liste d'ami");
+		System.out.println("5- Afficher votre liste d'ami");
+		System.out.println("10- Supprimer un ami");
 		System.out.println("0- Quitter CessSpot\n");
 
 		// System.out.println("9- Créer un compte");
 
 		System.out.println("** ADMIN **");
 
-		System.out.println("7- Supprimer Messages Autres Utilisateurs");
+		System.out.println("6- Supprimer Messages Autres Utilisateurs");
 
-		System.out.println("8- Editer Messages Autres Utilisateurs");
+		System.out.println("7- Editer Messages Autres Utilisateurs");
 
-		System.out.println("9- afficher les utilisateurs");
+		System.out.println("8- afficher les utilisateurs");
 
-		System.out.println("10- Supprimer un utilisateur");
+		System.out.println("9- Supprimer un utilisateur");
 
 		int choix = sc.nextInt();
 		sc.nextLine();
@@ -617,27 +468,22 @@ public class Menu {
 
 		case 2:
 
-			modifierProfil();
+			write();
 
 			break;
 		case 3:
 
-			write();
+			read();
 
 			break;
 		case 4:
 
-			read();
+			addFriend();
 
 			break;
 		case 5:
 
-			addFriend();
-
-			break;
-		case 6:
-
-			displayFriend();
+			displayFriends();
 
 			break;
 		case 0:
@@ -645,23 +491,27 @@ public class Menu {
 
 			break;
 
-		case 7:
+		case 6:
 			deleteMessage();
 
 			break;
-		case 8:
+		case 7:
 			modifyMessage();
 
 			break;
-		case 9:
-			allUsers();
+		case 8:
+			displayUsers();
 
 			break;
-		case 10:
+		case 9:
 			deleteUser();
 
 			break;
+		case 10:
+			deleteFriend();
+			break;
 
 		}
+
 	}
 }

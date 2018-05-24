@@ -37,8 +37,8 @@ public class Moderateur extends Utilisateur {
 	 * est modo
 	 */
 	public void setModo(int modo) {
-		setUser();
-		this.modo = modo;
+		
+		
 	}
 
 	public boolean isModerateur() {

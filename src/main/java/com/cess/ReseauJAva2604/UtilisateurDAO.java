@@ -5,15 +5,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class UtilisateurDAO extends DAO<Utilisateur> {
 
 	int friend;
-	private int level;
+
+	Scanner sc=new Scanner(System.in);
 
 	@Override
 	public Utilisateur create(Utilisateur user) {
-		// TODO Auto-generated method stub
+		
 		Utilisateur returnUser = user;
 		try {
 
@@ -42,7 +44,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
 	public Utilisateur createMod(Utilisateur mod, int level) {
 		Utilisateur moderation = create(mod);
-		this.level = level;
+	
 		return moderation;
 
 	}
@@ -102,7 +104,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
 			while (rs.next()) {
 				Utilisateur ami = new Utilisateur();
-
+				ami.setId(rs.getInt("id"));
 				ami.setNom(rs.getString("nom"));
 				ami.setPrenom(rs.getString("prenom"));
 				ami.setDateNaissance(rs.getString("dateNaissance"));
@@ -137,7 +139,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	public void deleteFriend(Utilisateur user, int ami) {
 		try {
 			PreparedStatement pstat = (PreparedStatement) Connexion.getInstance()
-					.prepareStatement("DELETE FROM ami WHERE friendship = ? AND friend_id = ?");
+					.prepareStatement("DELETE FROM ami WHERE user_id = ? AND friend_id = ?");
 			pstat.setInt(1, user.getId());
 			pstat.setInt(2, ami);
 			// execute delete SQL statement

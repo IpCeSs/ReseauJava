@@ -66,14 +66,20 @@ public class Menu {
 
 					break;
 
-				default:
+				case 1:
 					this.currentUser = mod;
 					this.mod = mod;
 					setUser();
 					this.currentUser = uDao.createMod(mod, level);
 
 					break;
+				case 2:
+					this.currentUser = mod;
+					this.mod = mod;
+					setUser();
+					this.currentUser = uDao.createMod(mod, level);
 
+					break;
 				}
 				afficheFormNewUser = false;
 			} catch (InputMismatchException e) {
@@ -221,6 +227,7 @@ public class Menu {
 		// TODO Auto-generated method stub
 		System.out.println("Liste de vos amis :");
 		ArrayList<Utilisateur> listeAmis = uDao.getAllFriends(currentUser);
+		
 
 		/**
 		 * on parcours l'array liste issue de la BDD (return de la fonction

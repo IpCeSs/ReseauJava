@@ -46,7 +46,7 @@ public class Connexion {
 	public static void close() {
 		try {
 			cn.close();
-			System.out.println("Base de donées déconnectée");
+			System.out.println("Base de données déconnectée");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
